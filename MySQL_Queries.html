@@ -1,0 +1,271 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prewritten MySQL queries</title><style>
+:root{--ink:#1b2733;--mut:#5d6b78;--bg:#f3f5f7;--card:#fff;--line:#d9e0e6;--acc:#1f6f43;--bad:#b3261e;--code:#0f1b26;--b1:#e3edf9;--b2:#fdf0d9;--b3:#e1f3e8;--b4:#f1e6f7}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Segoe UI",system-ui,sans-serif}
+h1,h2,h3{font-family:Georgia,serif;line-height:1.25;margin:0 0 .5em}
+header{background:var(--code);color:#e8eef3;padding:44px 20px 34px}
+header div,main,nav div{max-width:960px;margin:auto}
+header h1{font-size:2rem;color:#fff}header p{margin:.3em 0;color:#aebccb;max-width:70ch}
+nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:5}
+nav div{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+nav a{padding:14px 10px;color:var(--mut);text-decoration:none;white-space:nowrap;font-size:.88rem}
+nav a:hover{color:var(--ink);box-shadow:inset 0 -3px var(--acc)}
+main{padding:20px 16px 80px}
+section{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:26px 26px 14px;margin:22px 0}
+section>h2{font-size:1.5rem;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+h3{font-size:1.05rem;margin-top:1.3em}
+.note,.warn,.good{padding:10px 14px;border-left:4px solid #b86e00;background:#fbf3e4;margin:14px 0;border-radius:0 4px 4px 0}
+.warn{border-color:var(--bad);background:#fbeceb}.good{border-color:var(--acc);background:#e8f5ee}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#eef2f5}
+.cw{position:relative;margin:8px 0}
+pre{margin:0;background:var(--code);color:#dbe6ef;padding:12px 14px;border-radius:5px;overflow-x:auto;font:13.3px/1.55 Consolas,Menlo,monospace}
+.cp{position:absolute;top:6px;right:6px;background:#26384a;color:#cfe0ee;border:0;border-radius:4px;padding:3px 10px;font-size:.78rem;cursor:pointer}
+code{background:#eaeff3;padding:1px 6px;border-radius:3px;font:.88em Consolas,Menlo,monospace}
+.step{border:1px solid var(--line);border-radius:6px;margin:16px 0;overflow:hidden}
+.step>h3{margin:0;padding:10px 14px;background:#eef2f5;font-size:1rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.step .body{padding:6px 16px 12px}
+.step .lbl{font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:12px 0 2px}
+.step ol,.step ul{margin:.2em 0;padding-left:22px}.step li{margin:.25em 0}
+.say{border-left:3px solid #7d92a6;padding:2px 12px;color:#33414f;font-style:italic;margin:6px 0}
+.badge{font:600 .72rem/1 "Segoe UI",sans-serif;padding:4px 8px;border-radius:10px;font-style:normal}
+.adm{background:var(--b4)}.don{background:var(--b2)}.ngo{background:var(--b1)}.vol{background:var(--b3)}.wb{background:#e3e3e3}.any{background:#fdebd0}
+.q{border:1px solid var(--line);border-radius:6px;margin:14px 0;padding:10px 14px 4px}
+.q h3{margin:0 0 4px;font-size:.98rem}.q p{margin:.2em 0;font-size:.9rem;color:#33414f}
+.exp{font-size:.88rem;color:var(--acc);margin:.2em 0 .5em}
+.k{font-size:.7rem;padding:2px 7px;border-radius:9px;margin-left:6px;vertical-align:middle;font-family:"Segoe UI",sans-serif}
+.k-ro{background:#e8f5ee;color:#1d6a3f}.k-mysql{background:#e3edf9;color:#1f4a7a}.k-change{background:#fbeceb;color:#9a2a22}
+@media(max-width:640px){section{padding:18px 14px 6px}}
+</style></head><body><header><div><h1>Prewritten MySQL queries</h1><p>77 ready-to-run queries for the instructor, grouped by lab experiment. Copy a query, run it in Workbench, and read the line under it for what it shows.</p></div></header><nav><div><a href="#a">Look around the databa</a><a href="#b">Operators and simple q</a><a href="#c">Joins</a><a href="#d">Aggregates, GROUP BY a</a><a href="#e">Nested queries</a><a href="#f">Set operations</a><a href="#g">Views</a><a href="#h">Business questions</a><a href="#i">Prove the rules</a><a href="#j">Prove the constraints</a><a href="#k">Transactions</a><a href="#l">DDL and DML demos</a></div></nav><main><section><h2>How to use this page</h2>
+<ol><li>Open MySQL Workbench, connect, and run <code>USE food_waste_db;</code> first.</li>
+<li>Click inside a query and press <b>Ctrl + Enter</b> to run just that statement. To run several lines you selected, use <b>Ctrl + Shift + Enter</b>.</li>
+<li>Every query was written for the final database (11 tables, 7 views, 9 triggers). The <b>Expect</b> lines assume a database that has just been loaded from <code>food_waste_full.sql</code>. After the website demo the numbers will differ, so reload the SQL if you want the exact figures.</li></ol>
+<p><span class="k k-ro">read only</span> safe, changes nothing. <span class="k k-mysql">MySQL only</span> uses MySQL features such as SHOW or NOW(); read only. <span class="k k-change">changes data</span> inserts, updates or deliberately fails; run in the order shown on a fresh load.</p>
+<div class="warn"><b>Safe Updates:</b> the UPDATE and DELETE statements here all use a key column in the WHERE clause, so Workbench's Safe Updates mode does not block them. Only the expiry clean-up in the SQL file needs that mode switched off.</div>
+<div class="note">Not yet run on a real MySQL server. The read-only queries were checked for correct table and column names and for the expected results against a stand-in copy of the data; the MySQL-only statements and the trigger tests were checked by reading. If one fails on your server, send me the error and the query title.</div></section>
+<section id="a"><h2>1. Look around the database</h2><p>Start here if the instructor says "show me what is in your database".</p><div class="q"><h3>All tables and views<span class="k k-mysql">MySQL only</span></h3><p>Lists every table and view in the database.</p><div class="cw"><button class="cp">Copy</button><pre>SHOW FULL TABLES;</pre></div><div class="exp"><b>Expect:</b> 18 rows: 11 tables and 7 views.</div></div><div class="q"><h3>Structure of one table<span class="k k-mysql">MySQL only</span></h3><p>Columns, data types, NULL rules and keys of the table that links NGOs to food listings.</p><div class="cw"><button class="cp">Copy</button><pre>DESCRIBE Collection_Request;</pre></div></div><div class="q"><h3>Full definition of the weak entity<span class="k k-mysql">MySQL only</span></h3><p>Shows the composite key (delivery_id, check_no), the foreign key with ON DELETE CASCADE and the UNIQUE (delivery_id, check_stage).</p><div class="cw"><button class="cp">Copy</button><pre>SHOW CREATE TABLE Quality_Check;</pre></div></div><div class="q"><h3>All constraints in the database<span class="k k-mysql">MySQL only</span></h3><p>Every PRIMARY KEY, FOREIGN KEY, UNIQUE and CHECK constraint.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT table_name, constraint_type, constraint_name
+FROM information_schema.table_constraints
+WHERE table_schema = &#x27;food_waste_db&#x27;
+ORDER BY table_name, constraint_type;</pre></div></div><div class="q"><h3>All foreign keys (the relationships of the ER diagram)<span class="k k-mysql">MySQL only</span></h3><p>Each row is one relationship: LISTS, CLASSIFIES, PLACES, REQUESTED_VIA, FULFILLED_BY, CARRIES_OUT, HAS and the three logins.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT table_name, column_name, referenced_table_name, referenced_column_name
+FROM information_schema.key_column_usage
+WHERE table_schema = &#x27;food_waste_db&#x27; AND referenced_table_name IS NOT NULL
+ORDER BY table_name;</pre></div><div class="exp"><b>Expect:</b> 12 rows.</div></div><div class="q"><h3>All triggers<span class="k k-mysql">MySQL only</span></h3><p>Which table each business rule is attached to, and whether it runs BEFORE or AFTER the change.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT trigger_name, action_timing, event_manipulation, event_object_table
+FROM information_schema.triggers
+WHERE trigger_schema = &#x27;food_waste_db&#x27;
+ORDER BY event_object_table, action_timing;</pre></div><div class="exp"><b>Expect:</b> 9 rows.</div></div><div class="q"><h3>Row count of every table<span class="k k-ro">read only</span></h3><p>Quick size of the database.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT &#x27;User_Account&#x27; AS tbl, COUNT(*) AS total_rows FROM User_Account
+UNION ALL SELECT &#x27;Food_Category&#x27;, COUNT(*) FROM Food_Category
+UNION ALL SELECT &#x27;Donor&#x27;, COUNT(*) FROM Donor
+UNION ALL SELECT &#x27;Donor_Phone&#x27;, COUNT(*) FROM Donor_Phone
+UNION ALL SELECT &#x27;NGO&#x27;, COUNT(*) FROM NGO
+UNION ALL SELECT &#x27;NGO_Phone&#x27;, COUNT(*) FROM NGO_Phone
+UNION ALL SELECT &#x27;Volunteer&#x27;, COUNT(*) FROM Volunteer
+UNION ALL SELECT &#x27;Food_Listing&#x27;, COUNT(*) FROM Food_Listing
+UNION ALL SELECT &#x27;Collection_Request&#x27;, COUNT(*) FROM Collection_Request
+UNION ALL SELECT &#x27;Delivery&#x27;, COUNT(*) FROM Delivery
+UNION ALL SELECT &#x27;Quality_Check&#x27;, COUNT(*) FROM Quality_Check;</pre></div><div class="exp"><b>Expect:</b> Fresh load, in this order: 10, 5, 4, 6, 3, 3, 2, 5, 5, 3, 4.</div></div></section>
+<section id="b"><h2>2. Operators and simple queries</h2><p>Lab Exp 3: arithmetic, comparison and logical operators, BETWEEN, IN, LIKE, NULL, ORDER BY.</p><div class="q"><h3>Arithmetic operators<span class="k k-ro">read only</span></h3><p>Calculated columns (about 4 meals per kg).</p><div class="cw"><button class="cp">Copy</button><pre>SELECT food_name, quantity_kg, quantity_kg * 4 AS approx_meals, quantity_kg / 2 AS half_portion
+FROM Food_Listing;</pre></div></div><div class="q"><h3>Comparison and logical operators<span class="k k-ro">read only</span></h3><p>AND, OR, NOT together with &gt;= and =.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT food_name, quantity_kg, listing_status
+FROM Food_Listing
+WHERE quantity_kg &gt;= 30
+  AND (listing_status = &#x27;Available&#x27; OR listing_status = &#x27;Allocated&#x27;)
+  AND NOT category_id = 3;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Assorted Bread Loaves and Fresh Vegetables.</div></div><div class="q"><h3>BETWEEN<span class="k k-ro">read only</span></h3><p>A range test.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT request_id, quantity_kg, request_status
+FROM Collection_Request
+WHERE quantity_kg BETWEEN 10 AND 25;</pre></div><div class="exp"><b>Expect:</b> Fresh load: 4 rows (the 5 kg request is left out).</div></div><div class="q"><h3>IN<span class="k k-ro">read only</span></h3><p>Matches any value of a list.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT donor_name, donor_type
+FROM Donor
+WHERE donor_type IN (&#x27;Bakery&#x27;, &#x27;Hotel&#x27;);</pre></div><div class="exp"><b>Expect:</b> Sai Bakery and Hotel Sunrise.</div></div><div class="q"><h3>LIKE<span class="k k-ro">read only</span></h3><p>Pattern matching with % as wildcard.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT ngo_name, registration_no
+FROM NGO
+WHERE ngo_name LIKE &#x27;%Foundation%&#x27; OR registration_no LIKE &#x27;MH/NGO/2018%&#x27;;</pre></div><div class="exp"><b>Expect:</b> Annadaan Foundation and Roti Bank Mumbai.</div></div><div class="q"><h3>NULL handling<span class="k k-ro">read only</span></h3><p>IS NULL finds deliveries that have no delivery time yet.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT delivery_id, delivery_status
+FROM Delivery
+WHERE delivery_time IS NULL;</pre></div><div class="exp"><b>Expect:</b> Fresh load: delivery 3 (Assigned).</div></div><div class="q"><h3>ORDER BY and LIMIT<span class="k k-ro">read only</span></h3><p>The three biggest listings.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT food_name, quantity_kg
+FROM Food_Listing
+ORDER BY quantity_kg DESC
+LIMIT 3;</pre></div><div class="exp"><b>Expect:</b> Fresh Vegetables, Packed Milk and Curd, Assorted Bread Loaves.</div></div><div class="q"><h3>DISTINCT<span class="k k-ro">read only</span></h3><p>Each status once.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT DISTINCT request_status
+FROM Collection_Request;</pre></div></div><div class="q"><h3>Food expiring soon (date arithmetic)<span class="k k-mysql">MySQL only</span></h3><p>Perishability: only food that expires in the next 12 hours.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT food_name, expiry_on
+FROM Food_Listing
+WHERE expiry_on BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 12 HOUR)
+ORDER BY expiry_on;</pre></div></div></section>
+<section id="c"><h2>3. Joins</h2><p>Lab Exp 4: inner, left, right, cross and self joins across the tables of the ER diagram.</p><div class="q"><h3>Inner join of three tables<span class="k k-ro">read only</span></h3><p>Each listing with its donor and category (relationships LISTS and CLASSIFIES).</p><div class="cw"><button class="cp">Copy</button><pre>SELECT l.listing_id, l.food_name, d.donor_name, c.category_name, c.storage_type
+FROM Food_Listing l
+JOIN Donor d ON d.donor_id = l.donor_id
+JOIN Food_Category c ON c.category_id = l.category_id
+ORDER BY l.listing_id;</pre></div><div class="exp"><b>Expect:</b> 5 rows.</div></div><div class="q"><h3>Four-table join: who requested what from whom<span class="k k-ro">read only</span></h3><p>The many-to-many link between NGOs and listings, resolved by Collection_Request.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT r.request_id, n.ngo_name, l.food_name, d.donor_name, r.quantity_kg, r.request_status
+FROM Collection_Request r
+JOIN NGO n ON n.ngo_id = r.ngo_id
+JOIN Food_Listing l ON l.listing_id = r.listing_id
+JOIN Donor d ON d.donor_id = l.donor_id
+ORDER BY r.request_id;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Completed, Completed, Approved, Pending, Rejected.</div></div><div class="q"><h3>Six-table join: the whole delivery chain<span class="k k-ro">read only</span></h3><p>Donor to NGO, carried by which volunteer.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT dl.delivery_id, d.donor_name AS from_donor, n.ngo_name AS to_ngo,
+       v.volunteer_name, dl.delivery_status
+FROM Delivery dl
+JOIN Collection_Request r ON r.request_id = dl.request_id
+JOIN Food_Listing l ON l.listing_id = r.listing_id
+JOIN Donor d ON d.donor_id = l.donor_id
+JOIN NGO n ON n.ngo_id = r.ngo_id
+JOIN Volunteer v ON v.volunteer_id = dl.volunteer_id;</pre></div></div><div class="q"><h3>LEFT JOIN: every NGO, even with no requests<span class="k k-ro">read only</span></h3><p>Asha Children Home appears with 0 requests.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT n.ngo_name, n.verified_status, COUNT(r.request_id) AS requests_made
+FROM NGO n
+LEFT JOIN Collection_Request r ON r.ngo_id = n.ngo_id
+GROUP BY n.ngo_id, n.ngo_name, n.verified_status;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Annadaan 3, Roti Bank 2, Asha 0.</div></div><div class="q"><h3>LEFT JOIN with IS NULL: listings nobody requested<span class="k k-ro">read only</span></h3><p>Rows with no match on the right side.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT l.listing_id, l.food_name
+FROM Food_Listing l
+LEFT JOIN Collection_Request r ON r.listing_id = l.listing_id
+WHERE r.request_id IS NULL;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Fresh Vegetables.</div></div><div class="q"><h3>RIGHT JOIN: every volunteer with their deliveries<span class="k k-ro">read only</span></h3><p>Volunteers without a delivery would still appear.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT v.volunteer_name, dl.delivery_id, dl.delivery_status
+FROM Delivery dl
+RIGHT JOIN Volunteer v ON v.volunteer_id = dl.volunteer_id;</pre></div></div><div class="q"><h3>Weak entity joined to its owner<span class="k k-ro">read only</span></h3><p>Quality_Check rows only exist together with their delivery.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT dl.delivery_id, q.check_no, q.check_stage, q.temperature_c, q.result
+FROM Delivery dl
+JOIN Quality_Check q ON q.delivery_id = dl.delivery_id
+ORDER BY dl.delivery_id, q.check_no;</pre></div></div><div class="q"><h3>CROSS JOIN: possible assignments<span class="k k-ro">read only</span></h3><p>Every approved request that has no delivery yet, paired with every free volunteer.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT r.request_id, v.volunteer_name
+FROM Collection_Request r
+CROSS JOIN Volunteer v
+WHERE r.request_status = &#x27;Approved&#x27; AND v.availability = &#x27;Available&#x27;
+  AND NOT EXISTS (SELECT 1 FROM Delivery dl WHERE dl.request_id = r.request_id);</pre></div><div class="exp"><b>Expect:</b> Fresh load: no rows (the only approved request already has a delivery). It fills after you approve a request in the demo.</div></div><div class="q"><h3>Self join: two donors in the same city<span class="k k-ro">read only</span></h3><p>A table joined to itself.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT a.donor_name AS donor_1, b.donor_name AS donor_2, a.city
+FROM Donor a
+JOIN Donor b ON a.city = b.city AND a.donor_id &lt; b.donor_id;</pre></div></div></section>
+<section id="d"><h2>4. Aggregates, GROUP BY and HAVING</h2><p>Lab Exp 4: COUNT, SUM, AVG, MIN, MAX with grouping.</p><div class="q"><h3>Aggregate functions over a table<span class="k k-ro">read only</span></h3><p>Summary of the remaining stock.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT COUNT(*) AS listings, SUM(quantity_kg) AS total_kg, AVG(quantity_kg) AS avg_kg,
+       MIN(quantity_kg) AS smallest, MAX(quantity_kg) AS largest
+FROM Food_Listing;</pre></div><div class="exp"><b>Expect:</b> Fresh load: 5, 175.00, 35.000, 10.00, 80.00.</div></div><div class="q"><h3>GROUP BY: stock per category<span class="k k-ro">read only</span></h3><p>COALESCE turns the NULL of an empty category into 0.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT c.category_name, COUNT(l.listing_id) AS listings,
+       COALESCE(SUM(l.quantity_kg), 0) AS stock_kg
+FROM Food_Category c
+LEFT JOIN Food_Listing l ON l.category_id = c.category_id
+GROUP BY c.category_id, c.category_name
+ORDER BY stock_kg DESC;</pre></div><div class="exp"><b>Expect:</b> Frozen Foods shows 0.</div></div><div class="q"><h3>GROUP BY: requests by status<span class="k k-ro">read only</span></h3><p>How the requests are spread over the life cycle.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT request_status, COUNT(*) AS requests, SUM(quantity_kg) AS kg
+FROM Collection_Request
+GROUP BY request_status;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Approved 1, Completed 2, Pending 1, Rejected 1.</div></div><div class="q"><h3>GROUP BY: kilograms requested per NGO<span class="k k-ro">read only</span></h3><div class="cw"><button class="cp">Copy</button><pre>SELECT n.ngo_name, COUNT(r.request_id) AS requests, COALESCE(SUM(r.quantity_kg), 0) AS kg_requested
+FROM NGO n
+LEFT JOIN Collection_Request r ON r.ngo_id = n.ngo_id
+GROUP BY n.ngo_id, n.ngo_name
+ORDER BY kg_requested DESC;</pre></div></div><div class="q"><h3>HAVING: donors with at least 2 listings<span class="k k-ro">read only</span></h3><p>HAVING filters groups; WHERE filters rows.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT d.donor_name, COUNT(l.listing_id) AS listings, SUM(l.quantity_kg) AS stock_kg
+FROM Donor d
+JOIN Food_Listing l ON l.donor_id = d.donor_id
+GROUP BY d.donor_id, d.donor_name
+HAVING COUNT(l.listing_id) &gt;= 2;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Sai Bakery (40 kg) and FreshMart (120 kg).</div></div><div class="q"><h3>HAVING: NGOs that received more than 20 kg<span class="k k-ro">read only</span></h3><p>Only completed deliveries count.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT n.ngo_name, SUM(dl.delivered_kg) AS kg_received
+FROM NGO n
+JOIN Collection_Request r ON r.ngo_id = n.ngo_id
+JOIN Delivery dl ON dl.request_id = r.request_id
+WHERE dl.delivery_status = &#x27;Delivered&#x27;
+GROUP BY n.ngo_id, n.ngo_name
+HAVING SUM(dl.delivered_kg) &gt; 20;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Roti Bank Mumbai, 25.00.</div></div><div class="q"><h3>Volunteer performance<span class="k k-ro">read only</span></h3><div class="cw"><button class="cp">Copy</button><pre>SELECT v.volunteer_name, COUNT(dl.delivery_id) AS deliveries, COALESCE(SUM(dl.delivered_kg), 0) AS kg_delivered
+FROM Volunteer v
+LEFT JOIN Delivery dl ON dl.volunteer_id = v.volunteer_id
+GROUP BY v.volunteer_id, v.volunteer_name;</pre></div></div><div class="q"><h3>Quality pass rate per storage type<span class="k k-ro">read only</span></h3><p>A true comparison counts as 1, so SUM counts the matches.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT c.storage_type, COUNT(*) AS checks, SUM(q.result = &#x27;Pass&#x27;) AS passed,
+       ROUND(100 * SUM(q.result = &#x27;Pass&#x27;) / COUNT(*), 1) AS pass_percent
+FROM Quality_Check q
+JOIN Delivery dl ON dl.delivery_id = q.delivery_id
+JOIN Collection_Request r ON r.request_id = dl.request_id
+JOIN Food_Listing l ON l.listing_id = r.listing_id
+JOIN Food_Category c ON c.category_id = l.category_id
+GROUP BY c.storage_type;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Hot and Room, both 100.0.</div></div></section>
+<section id="e"><h2>5. Nested queries (subqueries)</h2><p>Lab Exp 4 and 8: subqueries with IN, EXISTS, ALL, scalar and derived tables.</p><div class="q"><h3>Three-level nested IN: NGOs that requested from FreshMart<span class="k k-ro">read only</span></h3><p>Subquery inside subquery inside subquery.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT ngo_name FROM NGO
+WHERE ngo_id IN (SELECT ngo_id FROM Collection_Request
+                 WHERE listing_id IN (SELECT listing_id FROM Food_Listing
+                                      WHERE donor_id = (SELECT donor_id FROM Donor WHERE donor_name = &#x27;FreshMart&#x27;)));</pre></div><div class="exp"><b>Expect:</b> Annadaan Foundation and Roti Bank Mumbai.</div></div><div class="q"><h3>Scalar subquery: above-average stock<span class="k k-ro">read only</span></h3><p>The inner query returns a single value.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT food_name, quantity_kg
+FROM Food_Listing
+WHERE quantity_kg &gt; (SELECT AVG(quantity_kg) FROM Food_Listing);</pre></div><div class="exp"><b>Expect:</b> Fresh load: Packed Milk and Curd, Fresh Vegetables.</div></div><div class="q"><h3>NOT EXISTS (correlated): NGOs with no completed request<span class="k k-ro">read only</span></h3><p>The inner query refers to the outer row.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT n.ngo_name FROM NGO n
+WHERE NOT EXISTS (SELECT 1 FROM Collection_Request r
+                  WHERE r.ngo_id = n.ngo_id AND r.request_status = &#x27;Completed&#x27;);</pre></div><div class="exp"><b>Expect:</b> Fresh load: Asha Children Home.</div></div><div class="q"><h3>EXISTS: volunteers who have delivered<span class="k k-ro">read only</span></h3><div class="cw"><button class="cp">Copy</button><pre>SELECT volunteer_name FROM Volunteer v
+WHERE EXISTS (SELECT 1 FROM Delivery dl
+              WHERE dl.volunteer_id = v.volunteer_id AND dl.delivery_status = &#x27;Delivered&#x27;);</pre></div></div><div class="q"><h3>NOT IN: donors who never posted food<span class="k k-ro">read only</span></h3><div class="cw"><button class="cp">Copy</button><pre>SELECT donor_name FROM Donor
+WHERE donor_id NOT IN (SELECT donor_id FROM Food_Listing);</pre></div><div class="exp"><b>Expect:</b> Fresh load: Green Kitchen.</div></div><div class="q"><h3>Subquery in the SELECT list<span class="k k-ro">read only</span></h3><p>Stock left next to the kilograms already allocated.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT l.food_name, l.quantity_kg AS stock_left,
+       (SELECT COALESCE(SUM(r.quantity_kg), 0) FROM Collection_Request r
+        WHERE r.listing_id = l.listing_id AND r.request_status IN (&#x27;Approved&#x27;,&#x27;Completed&#x27;)) AS kg_allocated
+FROM Food_Listing l;</pre></div></div><div class="q"><h3>Derived table (subquery in FROM)<span class="k k-ro">read only</span></h3><p>Average of per-NGO totals.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT AVG(total_kg) AS avg_kg_per_ngo
+FROM (SELECT ngo_id, SUM(quantity_kg) AS total_kg
+      FROM Collection_Request
+      GROUP BY ngo_id) AS per_ngo;</pre></div></div><div class="q"><h3>ALL: bigger than every bakery listing<span class="k k-mysql">MySQL only</span></h3><p>Bakery Items is category 2.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT food_name, quantity_kg
+FROM Food_Listing
+WHERE quantity_kg &gt; ALL (SELECT quantity_kg FROM Food_Listing WHERE category_id = 2);</pre></div><div class="exp"><b>Expect:</b> Fresh load: Packed Milk and Curd, Fresh Vegetables.</div></div></section>
+<section id="f"><h2>6. Set operations</h2><p>UNION and UNION ALL.</p><div class="q"><h3>UNION: one phone directory<span class="k k-ro">read only</span></h3><p>UNION removes duplicate rows.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT d.donor_name AS organisation, &#x27;Donor&#x27; AS org_type, p.phone
+FROM Donor d JOIN Donor_Phone p ON p.donor_id = d.donor_id
+UNION
+SELECT n.ngo_name, &#x27;NGO&#x27;, p.phone
+FROM NGO n JOIN NGO_Phone p ON p.ngo_id = n.ngo_id;</pre></div><div class="exp"><b>Expect:</b> 9 rows.</div></div><div class="q"><h3>UNION ALL: every registered name<span class="k k-ro">read only</span></h3><p>UNION ALL keeps duplicates.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT donor_name AS name, &#x27;Donor&#x27; AS kind FROM Donor
+UNION ALL
+SELECT ngo_name, &#x27;NGO&#x27; FROM NGO
+UNION ALL
+SELECT volunteer_name, &#x27;Volunteer&#x27; FROM Volunteer;</pre></div><div class="exp"><b>Expect:</b> 9 rows.</div></div></section>
+<section id="g"><h2>7. Views</h2><p>Lab Exp 5. These are the same views the website reads.</p><div class="q"><h3>Food an NGO can still request<span class="k k-ro">read only</span></h3><p>Only Available, not expired, with stock.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT * FROM v_available_listings;</pre></div></div><div class="q"><h3>Requests waiting for the admin<span class="k k-ro">read only</span></h3><div class="cw"><button class="cp">Copy</button><pre>SELECT * FROM v_pending_requests;</pre></div><div class="exp"><b>Expect:</b> Fresh load: Roti Bank, 25 kg of Packed Milk and Curd.</div></div><div class="q"><h3>Every delivery in one place<span class="k k-ro">read only</span></h3><div class="cw"><button class="cp">Copy</button><pre>SELECT * FROM v_delivery_status;</pre></div></div><div class="q"><h3>Summaries used by the Reports page<span class="k k-ro">read only</span></h3><p>Run them one at a time (select a statement and press Ctrl+Enter).</p><div class="cw"><button class="cp">Copy</button><pre>SELECT * FROM v_donor_summary;
+SELECT * FROM v_ngo_summary;
+SELECT * FROM v_volunteer_summary;
+SELECT * FROM v_quality_by_category;</pre></div></div><div class="q"><h3>A view used inside a query<span class="k k-ro">read only</span></h3><p>Views can be filtered, joined and grouped like tables.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT donor_name, SUM(quantity_kg) AS kg_available
+FROM v_available_listings
+GROUP BY donor_name;</pre></div></div><div class="q"><h3>Definition of a view<span class="k k-mysql">MySQL only</span></h3><p>The saved SELECT behind the view.</p><div class="cw"><button class="cp">Copy</button><pre>SHOW CREATE VIEW v_available_listings;</pre></div></div></section>
+<section id="h"><h2>8. Business questions</h2><p>Questions the system exists to answer.</p><div class="q"><h3>Food that must be collected in the next 6 hours<span class="k k-mysql">MySQL only</span></h3><p>Perishability: what to move first.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT food_name, donor_name, quantity_kg, expiry_on
+FROM v_available_listings
+WHERE expiry_on &lt;= DATE_ADD(NOW(), INTERVAL 6 HOUR)
+ORDER BY expiry_on;</pre></div></div><div class="q"><h3>Stock reconciliation: no kilogram lost<span class="k k-ro">read only</span></h3><p>Remaining plus allocated gives back the original quantity, which proves the stock triggers are consistent.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT l.listing_id, l.food_name, l.quantity_kg AS remaining,
+       COALESCE(SUM(r.quantity_kg), 0) AS allocated,
+       l.quantity_kg + COALESCE(SUM(r.quantity_kg), 0) AS original_total
+FROM Food_Listing l
+LEFT JOIN Collection_Request r ON r.listing_id = l.listing_id AND r.request_status IN (&#x27;Approved&#x27;,&#x27;Completed&#x27;)
+GROUP BY l.listing_id, l.food_name, l.quantity_kg;</pre></div><div class="exp"><b>Expect:</b> Fresh load: 50, 40, 60, 80, 10.</div></div><div class="q"><h3>NGO capacity used in the last 24 hours<span class="k k-mysql">MySQL only</span></h3><p>The numbers behind the capacity rule in trg_request_bu.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT n.ngo_name, n.daily_capacity_kg,
+       COALESCE(SUM(r.quantity_kg), 0) AS used_last_24h
+FROM NGO n
+LEFT JOIN Collection_Request r ON r.ngo_id = n.ngo_id
+     AND r.request_status IN (&#x27;Approved&#x27;,&#x27;Completed&#x27;)
+     AND r.approved_on &gt;= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+GROUP BY n.ngo_id, n.ngo_name, n.daily_capacity_kg;</pre></div></div><div class="q"><h3>Which volunteers are busy and with what<span class="k k-ro">read only</span></h3><div class="cw"><button class="cp">Copy</button><pre>SELECT v.volunteer_name, v.availability, dl.delivery_id, dl.delivery_status
+FROM Volunteer v
+LEFT JOIN Delivery dl ON dl.volunteer_id = v.volunteer_id AND dl.delivery_status IN (&#x27;Assigned&#x27;,&#x27;Picked Up&#x27;);</pre></div><div class="exp"><b>Expect:</b> Fresh load: Rohan Busy with delivery 3, Meera Available.</div></div><div class="q"><h3>Quality failures with the reason<span class="k k-ro">read only</span></h3><p>Empty on a fresh load; fills after a failed check.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT q.delivery_id, c.category_name, c.storage_type, q.temperature_c, q.packaging_ok, q.appearance_ok
+FROM Quality_Check q
+JOIN Delivery dl ON dl.delivery_id = q.delivery_id
+JOIN Collection_Request r ON r.request_id = dl.request_id
+JOIN Food_Listing l ON l.listing_id = r.listing_id
+JOIN Food_Category c ON c.category_id = l.category_id
+WHERE q.result = &#x27;Fail&#x27;;</pre></div></div><div class="q"><h3>Total food delivered<span class="k k-ro">read only</span></h3><p>The project goal in one number: food that reached people.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT SUM(delivered_kg) AS total_kg_delivered, COUNT(*) AS deliveries
+FROM Delivery
+WHERE delivery_status = &#x27;Delivered&#x27;;</pre></div><div class="exp"><b>Expect:</b> Fresh load: 45.00 kg in 2 deliveries.</div></div></section>
+<section id="i"><h2>9. Prove the rules (triggers)</h2><p>Run on a freshly loaded database, one test at a time, in this order. Each one changes data.</p><div class="q"><h3>R1: an unverified NGO is rejected<span class="k k-change">changes data</span></h3><p>Asha Children Home is still Pending verification.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Collection_Request (listing_id, ngo_id, quantity_kg) VALUES (3, 3, 5);
+SELECT request_id, ngo_id, request_status FROM Collection_Request ORDER BY request_id DESC LIMIT 1;</pre></div><div class="exp"><b>Expect:</b> request_status = Rejected.</div></div><div class="q"><h3>R3: more than the stock is rejected<span class="k k-change">changes data</span></h3><p>Listing 4 holds only 80 kg.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Collection_Request (listing_id, ngo_id, quantity_kg) VALUES (4, 1, 500);
+SELECT request_id, quantity_kg, request_status FROM Collection_Request ORDER BY request_id DESC LIMIT 1;</pre></div><div class="exp"><b>Expect:</b> Rejected.</div></div><div class="q"><h3>R2: a request on expired food is rejected<span class="k k-change">changes data</span></h3><p>Listing 5 (old pav buns) is Expired.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Collection_Request (listing_id, ngo_id, quantity_kg) VALUES (5, 1, 2);
+SELECT request_id, request_status FROM Collection_Request ORDER BY request_id DESC LIMIT 1;</pre></div><div class="exp"><b>Expect:</b> Rejected.</div></div><div class="q"><h3>R2: expired food cannot be listed as available<span class="k k-change">changes data</span></h3><p>trg_listing_bi stores it as Expired.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Food_Listing (donor_id, category_id, food_name, quantity_kg, prepared_on, expiry_on, pickup_deadline)
+VALUES (1, 2, &#x27;Old Bread&#x27;, 5, DATE_SUB(NOW(), INTERVAL 10 HOUR), DATE_SUB(NOW(), INTERVAL 1 HOUR), DATE_SUB(NOW(), INTERVAL 2 HOUR));
+SELECT listing_id, food_name, listing_status FROM Food_Listing ORDER BY listing_id DESC LIMIT 1;</pre></div><div class="exp"><b>Expect:</b> listing_status = Expired.</div></div><div class="q"><h3>Safe hours: expiry is cut down<span class="k k-change">changes data</span></h3><p>Cooked meals are safe for only 4 hours.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Food_Listing (donor_id, category_id, food_name, quantity_kg, prepared_on, expiry_on, pickup_deadline)
+VALUES (2, 1, &#x27;Dal Rice&#x27;, 10, NOW(), DATE_ADD(NOW(), INTERVAL 10 HOUR), DATE_ADD(NOW(), INTERVAL 2 HOUR));
+SELECT food_name, prepared_on, expiry_on FROM Food_Listing ORDER BY listing_id DESC LIMIT 1;</pre></div><div class="exp"><b>Expect:</b> expiry_on = prepared_on + 4 hours.</div></div><div class="q"><h3>Delivery refused for a request that is not approved<span class="k k-change">changes data</span></h3><p>Request 4 is still Pending and Rohan is Busy, so trg_delivery_bi blocks the row.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Delivery (request_id, volunteer_id) VALUES (4, 1);</pre></div><div class="exp"><b>Expect:</b> ERROR 1048: Column &#x27;volunteer_id&#x27; cannot be null. If the row is added instead, tell your team before continuing.</div></div><div class="q"><h3>R4: approval deducts the stock<span class="k k-change">changes data</span></h3><p>Nobody updates the stock by hand; trg_request_au does it.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT listing_id, quantity_kg FROM Food_Listing WHERE listing_id = 3;
+UPDATE Collection_Request SET request_status = &#x27;Approved&#x27; WHERE request_id = 4;
+SELECT listing_id, quantity_kg FROM Food_Listing WHERE listing_id = 3;</pre></div><div class="exp"><b>Expect:</b> 40 before, 15 after.</div></div><div class="q"><h3>A finished request cannot be reopened<span class="k k-change">changes data</span></h3><p>Request 1 is Completed.</p><div class="cw"><button class="cp">Copy</button><pre>UPDATE Collection_Request SET request_status = &#x27;Approved&#x27; WHERE request_id = 1;
+SELECT request_id, request_status FROM Collection_Request WHERE request_id = 1;</pre></div><div class="exp"><b>Expect:</b> Still Completed.</div></div><div class="q"><h3>Quality check: automatic number and Pass/Fail<span class="k k-change">changes data</span></h3><p>Chilled food above 8 C fails. check_no was not supplied.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Quality_Check (delivery_id, check_stage, temperature_c, packaging_ok, appearance_ok, remarks)
+VALUES (3, &#x27;Pickup&#x27;, 12, &#x27;Y&#x27;, &#x27;Y&#x27;, &#x27;Milk too warm&#x27;);
+SELECT delivery_id, check_no, check_stage, temperature_c, result FROM Quality_Check WHERE delivery_id = 3;</pre></div><div class="exp"><b>Expect:</b> check_no = 1, result = Fail.</div></div><div class="q"><h3>The failure chain (continues from the test above)<span class="k k-ro">read only</span></h3><p>One failed check: delivery Failed, request Cancelled, volunteer free, stock returned.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT delivery_id, delivery_status FROM Delivery WHERE delivery_id = 3;
+SELECT request_id, request_status FROM Collection_Request WHERE request_id = 3;
+SELECT volunteer_name, availability FROM Volunteer WHERE volunteer_id = 1;
+SELECT listing_id, quantity_kg FROM Food_Listing WHERE listing_id = 3;</pre></div><div class="exp"><b>Expect:</b> Failed, Cancelled, Available, and the stock is back up by 20 kg.</div></div></section>
+<section id="j"><h2>10. Prove the constraints</h2><p>These statements are meant to fail. Run them one at a time.</p><div class="q"><h3>CHECK constraint<span class="k k-change">changes data</span></h3><p>The allowed values are Available, Busy and Offline.</p><div class="cw"><button class="cp">Copy</button><pre>UPDATE Volunteer SET availability = &#x27;Sleeping&#x27; WHERE volunteer_id = 1;</pre></div><div class="exp"><b>Expect:</b> ERROR 3819: Check constraint ... is violated.</div></div><div class="q"><h3>CHECK on a number<span class="k k-change">changes data</span></h3><p>Quantities must be above zero.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Collection_Request (listing_id, ngo_id, quantity_kg) VALUES (3, 1, -5);</pre></div><div class="exp"><b>Expect:</b> ERROR 3819.</div></div><div class="q"><h3>FOREIGN KEY<span class="k k-change">changes data</span></h3><p>Donor 99 does not exist.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Donor_Phone (donor_id, phone) VALUES (99, &#x27;9999999999&#x27;);</pre></div><div class="exp"><b>Expect:</b> ERROR 1452: a foreign key constraint fails.</div></div><div class="q"><h3>UNIQUE<span class="k k-change">changes data</span></h3><p>Usernames must be unique.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO User_Account (username, password, role) VALUES (&#x27;admin&#x27;, &#x27;whatever1&#x27;, &#x27;Admin&#x27;);</pre></div><div class="exp"><b>Expect:</b> ERROR 1062: Duplicate entry.</div></div><div class="q"><h3>NOT NULL<span class="k k-change">changes data</span></h3><p>The phone number is required.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO NGO_Phone (ngo_id) VALUES (1);</pre></div><div class="exp"><b>Expect:</b> ERROR 1364: Field &#x27;phone&#x27; doesn&#x27;t have a default value.</div></div><div class="q"><h3>ON DELETE CASCADE<span class="k k-change">changes data</span></h3><p>A safe delete that is undone.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT COUNT(*) AS phones_of_donor_1 FROM Donor_Phone WHERE donor_id = 1;
+START TRANSACTION;
+DELETE FROM Donor_Phone WHERE donor_id = 1;
+SELECT COUNT(*) AS phones_inside FROM Donor_Phone WHERE donor_id = 1;
+ROLLBACK;
+SELECT COUNT(*) AS phones_after_rollback FROM Donor_Phone WHERE donor_id = 1;</pre></div><div class="exp"><b>Expect:</b> 2, then 0 inside the transaction, then 2 again.</div></div></section>
+<section id="k"><h2>11. Transactions (COMMIT, ROLLBACK, SAVEPOINT)</h2><p>Lab Exp 10. All of these are safe to run.</p><div class="q"><h3>COMMIT saves the work<span class="k k-change">changes data</span></h3><p>The change stays.</p><div class="cw"><button class="cp">Copy</button><pre>START TRANSACTION;
+UPDATE NGO SET daily_capacity_kg = daily_capacity_kg + 10 WHERE ngo_id = 1;
+COMMIT;
+SELECT ngo_name, daily_capacity_kg FROM NGO WHERE ngo_id = 1;</pre></div><div class="exp"><b>Expect:</b> Annadaan: 210.</div></div><div class="q"><h3>ROLLBACK undoes the work<span class="k k-change">changes data</span></h3><p>The first SELECT shows 5, the second shows the old value.</p><div class="cw"><button class="cp">Copy</button><pre>START TRANSACTION;
+UPDATE NGO SET daily_capacity_kg = 5 WHERE ngo_id = 1;
+SELECT ngo_name, daily_capacity_kg FROM NGO WHERE ngo_id = 1;
+ROLLBACK;
+SELECT ngo_name, daily_capacity_kg FROM NGO WHERE ngo_id = 1;</pre></div></div><div class="q"><h3>SAVEPOINT: undo only part<span class="k k-change">changes data</span></h3><p>The vehicle change is undone, the capacity change is kept.</p><div class="cw"><button class="cp">Copy</button><pre>START TRANSACTION;
+UPDATE NGO SET daily_capacity_kg = daily_capacity_kg + 50 WHERE ngo_id = 2;
+SAVEPOINT after_ngo;
+UPDATE Volunteer SET vehicle_type = &#x27;Van&#x27; WHERE volunteer_id = 1;
+ROLLBACK TO SAVEPOINT after_ngo;
+SELECT vehicle_type FROM Volunteer WHERE volunteer_id = 1;
+COMMIT;
+SELECT daily_capacity_kg FROM NGO WHERE ngo_id = 2;</pre></div><div class="exp"><b>Expect:</b> Rohan keeps Bike; Roti Bank gains 50.</div></div><div class="q"><h3>ROLLBACK also undoes what the triggers did<span class="k k-change">changes data</span></h3><p>Approval deducts stock inside the transaction; ROLLBACK returns it. Needs request 4 to be Pending.</p><div class="cw"><button class="cp">Copy</button><pre>SELECT listing_id, quantity_kg FROM Food_Listing WHERE listing_id = 3;
+START TRANSACTION;
+UPDATE Collection_Request SET request_status = &#x27;Approved&#x27; WHERE request_id = 4;
+SELECT listing_id, quantity_kg FROM Food_Listing WHERE listing_id = 3;
+ROLLBACK;
+SELECT listing_id, quantity_kg FROM Food_Listing WHERE listing_id = 3;
+SELECT request_id, request_status FROM Collection_Request WHERE request_id = 4;</pre></div><div class="exp"><b>Expect:</b> 40, 15, 40, and the request is Pending again.</div></div></section>
+<section id="l"><h2>12. DDL and DML demos (Exp 1 and 2)</h2><p>Only if the instructor asks for CREATE, ALTER, TRUNCATE, DROP, INSERT, UPDATE and DELETE. Everything is done on a copy or on a new row.</p><div class="q"><h3>CREATE, ALTER, TRUNCATE, DROP on a copy<span class="k k-change">changes data</span></h3><p>Create from a query, add a key, add and change a column, add a constraint, empty the table, remove it.</p><div class="cw"><button class="cp">Copy</button><pre>CREATE TABLE Food_Category_Copy AS SELECT * FROM Food_Category;
+ALTER TABLE Food_Category_Copy ADD PRIMARY KEY (category_id);
+ALTER TABLE Food_Category_Copy ADD COLUMN notes VARCHAR(50);
+ALTER TABLE Food_Category_Copy MODIFY notes VARCHAR(100);
+ALTER TABLE Food_Category_Copy ADD CHECK (safe_hours &gt; 0);
+ALTER TABLE Food_Category_Copy DROP COLUMN notes;
+SELECT * FROM Food_Category_Copy;
+TRUNCATE TABLE Food_Category_Copy;
+SELECT COUNT(*) AS rows_after_truncate FROM Food_Category_Copy;
+DROP TABLE Food_Category_Copy;</pre></div></div><div class="q"><h3>INSERT, UPDATE, DELETE<span class="k k-change">changes data</span></h3><p>The new category gets id 6 on a fresh load; the last SELECT is back to 5 rows.</p><div class="cw"><button class="cp">Copy</button><pre>INSERT INTO Food_Category (category_name, storage_type, safe_hours) VALUES (&#x27;Beverages&#x27;, &#x27;Chilled&#x27;, 24);
+SELECT * FROM Food_Category;
+UPDATE Food_Category SET safe_hours = 18 WHERE category_id = 6;
+DELETE FROM Food_Category WHERE category_id = 6;
+SELECT * FROM Food_Category;</pre></div></div></section>
+</main><script>document.querySelectorAll('.cp').forEach(function(b){b.addEventListener('click',function(){var t=b.nextElementSibling.innerText;if(navigator.clipboard){navigator.clipboard.writeText(t)}b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)})});</script></body></html>

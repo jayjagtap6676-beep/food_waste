@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Run the website - Food Waste project</title><style>
+:root{--ink:#1b2733;--mut:#5d6b78;--bg:#f3f5f7;--card:#fff;--line:#d9e0e6;--acc:#1f6f43;--bad:#b3261e;--code:#0f1b26}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Segoe UI",system-ui,sans-serif}
+h1,h2,h3{font-family:Georgia,serif;line-height:1.25;margin:0 0 .5em}
+header{background:var(--code);color:#e8eef3;padding:44px 20px 34px}
+header div,main,nav div{max-width:900px;margin:auto}
+header h1{font-size:2rem;color:#fff}header p{margin:.3em 0;color:#aebccb;max-width:64ch}
+nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:5}
+nav div{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+nav a{padding:14px 10px;color:var(--mut);text-decoration:none;white-space:nowrap;font-size:.9rem}
+nav a:hover{color:var(--ink);box-shadow:inset 0 -3px var(--acc)}
+main{padding:20px 16px 80px}
+section{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:26px 26px 14px;margin:22px 0}
+section>h2{font-size:1.5rem;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+h3{font-size:1.05rem;margin-top:1.4em}
+ol{padding-left:22px}li{margin:.5em 0}
+.note,.warn,.good{padding:10px 14px;border-left:4px solid #b86e00;background:#fbf3e4;margin:14px 0;border-radius:0 4px 4px 0}
+.warn{border-color:var(--bad);background:#fbeceb}.good{border-color:var(--acc);background:#e8f5ee}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#eef2f5}
+.cw{position:relative;margin:10px 0}
+pre{margin:0;background:var(--code);color:#dbe6ef;padding:14px 16px;border-radius:5px;overflow-x:auto;font:13.5px/1.55 Consolas,Menlo,monospace}
+.cp{position:absolute;top:6px;right:6px;background:#26384a;color:#cfe0ee;border:0;border-radius:4px;padding:3px 10px;font-size:.78rem;cursor:pointer}
+code{background:#eaeff3;padding:1px 6px;border-radius:3px;font:.9em Consolas,Menlo,monospace}
+.tree{background:var(--code);color:#dbe6ef;padding:14px 16px;border-radius:5px;font:13.5px/1.6 Consolas,Menlo,monospace;white-space:pre;overflow-x:auto}
+@media(max-width:560px){section{padding:18px 14px 6px}}
+</style></head><body>
+<header><div><h1>Run the website on your laptop</h1><p>Food Waste Recovery &amp; Redistribution &middot; MySQL database + Flask website. Follow the parts in order. The website reads and writes the MySQL database you load in part 3.</p></div></header>
+<nav><div><a href="#a">1. What is inside</a><a href="#b">2. Install</a><a href="#c">3. Load the database</a><a href="#d">4. Connect the website</a><a href="#e">5. Start it</a><a href="#f">6. Demo</a><a href="#g">7. What changed</a><a href="#h">8. Problems</a></div></nav>
+<main>
+<section id="a"><h2>1. What is inside the zip</h2><div class="tree">food_waste_project/
+  README_STEPS.html            this page
+  run_website.bat              double-click to install the packages and start the website (Windows)
+  sql/
+    food_waste_full.sql        the whole database: 11 tables, 7 views, 9 triggers, data
+  app/
+    app.py  auth.py  db.py  listings.py  delivery.py     the website (Python Flask)
+    config_local.py            <b>your MySQL password goes here</b>
+    requirements.txt
+    templates/                 12 HTML pages</div>
+<div class="note"><b>How the two parts connect:</b> the SQL file only builds the database <code>food_waste_db</code> inside your MySQL server. The website (<code>app/db.py</code>) then logs in to that server with <code>root</code> and your password and sends it ordinary SQL. The rules (triggers) and the views live inside MySQL, so the website never has to repeat them.</div></section>
+<section id="b"><h2>2. Install (once)</h2><ol><li><b>MySQL Server 8.0.16 or newer</b> and <b>MySQL Workbench</b> (MySQL Installer from mysql.com, Custom or Full). Remember the root password you set. Keep port 3306.</li>
+<li><b>Python 3.10 or newer</b> from python.org. In the installer tick <i>Add python.exe to PATH</i>.</li>
+<li>Check the versions: in Workbench run <code>SELECT VERSION();</code> (must be 8.0.16 or higher, otherwise CHECK constraints are ignored). In Command Prompt run <code>python --version</code>.</li></ol></section>
+<section id="c"><h2>3. Load the database into MySQL</h2><ol><li>Open <b>MySQL Workbench</b> and click your local connection (usually <i>Local instance MySQL80</i>). Enter the root password.</li>
+<li><b>File &gt; Open SQL Script</b> and choose <code>sql/food_waste_full.sql</code> from the unzipped folder.</li>
+<li>Click the <b>lightning icon</b> (runs the whole script). It deletes and rebuilds <code>food_waste_db</code>, so you can repeat it any time to reset the data.</li>
+<li>Check it worked: run</li></ol><div class="cw"><button class="cp">Copy</button><pre>USE food_waste_db;
+SHOW FULL TABLES;      -- 11 tables and 7 views
+SHOW TRIGGERS;         -- 9 triggers
+SELECT username, role FROM User_Account;</pre></div><div class="warn">Run it as one script. Triggers contain semicolons, so running them line by line fails. The last section of the script contains transaction blocks that COMMIT, so the database after loading is not the bare sample data: request 3 is already approved and given to Rohan, delivery 2 is delivered, and a donor called Green Kitchen exists.</div></section>
+<section id="d"><h2>4. Connect the website to your MySQL</h2><ol><li>Open <code>app/config_local.py</code> in Notepad and put your real root password between the quotes:</li></ol><div class="cw"><button class="cp">Copy</button><pre>DB_PASSWORD = &quot;your_mysql_password&quot;</pre></div><ol start="2"><li>That is the only required change. The connection details the website uses are in <code>app/db.py</code>:</li></ol><div class="cw"><button class="cp">Copy</button><pre>DB_CONFIG = {&quot;host&quot;: &quot;localhost&quot;, &quot;user&quot;: &quot;root&quot;, &quot;password&quot;: DB_PASSWORD, &quot;database&quot;: &quot;food_waste_db&quot;}</pre></div><p>If your MySQL user is not <code>root</code>, or MySQL runs on another port, change this line (add <code>"port": 3307</code> for example). The database name must stay <code>food_waste_db</code>, which is what the SQL file creates.</p></section>
+<section id="e"><h2>5. Start the website</h2><p><b>Easy way (Windows):</b> double-click <code>run_website.bat</code>. <b>Manual way:</b> open the <code>app</code> folder, type <code>cmd</code> in the address bar and press Enter, then run:</p><div class="cw"><button class="cp">Copy</button><pre>pip install -r requirements.txt
+python app.py</pre></div><p>Open <b>http://localhost:5000</b> in the browser. Keep the black window open while you use the site; stop it with <code>Ctrl + C</code>.</p></section>
+<section id="f"><h2>6. Demo and checks</h2><p>Logins: <code>admin</code> / <code>admin123</code>. Everyone else uses <code>pass123</code>: <code>sai_bakery</code>, <code>hotel_sunrise</code>, <code>freshmart</code> (donors); <code>annadaan</code>, <code>rotibank</code>, <code>asha_home</code> (NGOs); <code>rohan</code>, <code>meera</code> (volunteers); <code>green_kitchen</code> (donor).</p>
+<table><tr><th>#</th><th>Who</th><th>Do this</th><th>What you should see</th></tr>
+<tr><td>1</td><td>asha_home</td><td>Browse Food, request 5 kg of anything</td><td>Red message: request rejected (the NGO is not verified). It shows as Rejected in My Requests.</td></tr>
+<tr><td>2</td><td>admin</td><td>NGOs, click Verify on Asha Children Home</td><td>Status becomes Verified. Repeat step 1: the request is now Pending.</td></tr>
+<tr><td>3</td><td>sai_bakery</td><td>My Listings: post Bakery Items, 10 kg, prepared now, expiry 30 hours later</td><td>Yellow message: expiry shortened to 24 hours (the category's safe hours).</td></tr>
+<tr><td>4</td><td>annadaan</td><td>Browse Food, request 500 kg</td><td>Rejected (more than the stock).</td></tr>
+<tr><td>5</td><td>admin</td><td>Requests: approve the pending request of Roti Bank (25 kg of milk and curd)</td><td>Green message. In Workbench: <code>SELECT quantity_kg FROM Food_Listing WHERE listing_id = 3;</code> shows 15 (stock went 40 &rarr; 15 automatically).</td></tr>
+<tr><td>6</td><td>admin</td><td>Assign Delivery: pick Meera for that request</td><td>Volunteer assigned. Rohan is not in the list because he is Busy with delivery 3.</td></tr>
+<tr><td>7</td><td>meera</td><td>My Deliveries: Pickup check at 5 &deg;C, tick both boxes, Save check, then Mark Picked Up</td><td>Check result Pass, status Picked Up.</td></tr>
+<tr><td>8</td><td>meera</td><td>Delivery check at <b>12 &deg;C</b> (milk must stay at 8 &deg;C or below)</td><td>Yellow message: check FAILED. The delivery is Failed, the request is Cancelled, 25 kg go back to stock (15 &rarr; 40), Meera is free again.</td></tr>
+<tr><td>9</td><td>rohan</td><td>My Deliveries, delivery 3: Pickup check at 5 &deg;C, Mark Picked Up. Then click Mark Delivered <b>before</b> saving a Delivery check. Then save the Delivery check at 6 &deg;C and click Mark Delivered again.</td><td>The first attempt is refused (a passing quality check is needed first). The second works: status Delivered, request Completed, Rohan free. Admin &gt; Reports shows the totals.</td></tr>
+<tr><td>10</td><td>new user</td><td>Register as Donor with pincode 4000</td><td>MySQL rejects it. In Workbench <code>SELECT * FROM User_Account WHERE username = 'the name you typed';</code> returns no row: the registration was rolled back as one transaction.</td></tr></table></section>
+<section id="g"><h2>7. What changed compared with your three guides</h2><p>The 12 pages in <code>templates</code>, <code>auth.py</code>, <code>config_local.py</code> and <code>requirements.txt</code> are exactly the files from the guides. The SQL no longer has stored procedures, custom error messages or some views the guides assumed, so these parts had to change:</p>
+<table><tr><th>File</th><th>Change</th></tr>
+<tr><td>app/db.py</td><td><code>call_proc</code> removed. New <code>run_in_transaction</code> (START TRANSACTION, COMMIT, ROLLBACK on any error) and <code>expire_listings</code> (the clean-up of SQL section 5).</td></tr>
+<tr><td>app/app.py</td><td>Login is one SELECT instead of <code>sp_login</code> (wrong password and blocked account are checked in Python). Registration already used a transaction and is unchanged.</td></tr>
+<tr><td>app/listings.py</td><td>Approve, cancel listing and expiry no longer call procedures. Because triggers now store a bad request as Rejected instead of raising an error, the page checks the saved status and shows a message. Posting a listing reports if the expiry was shortened or the food was already expired.</td></tr>
+<tr><td>app/delivery.py</td><td>Assigning is a plain INSERT (the trigger refuses an invalid one). Status changes are done in Python: pickup and delivery times are set, the order Assigned &gt; Picked Up &gt; Delivered is enforced and a passing quality check is required (the SQL file does not enforce that order itself).</td></tr>
+<tr><td>sql/food_waste_full.sql</td><td>Views changed to the column names the pages use, plus <code>v_ngo_summary</code>, <code>v_volunteer_summary</code> and <code>v_quality_by_category</code> (renamed from <code>v_quality_summary</code>). Password minimum length 4 (the register page allows 4). <code>Truck</code> added to the vehicle list (the register page offers it).</td></tr></table>
+<div class="note">Not tested against a real MySQL server or a real browser session: the website code was checked with a stand-in database, and the SQL has never been run on MySQL. The first real run is your first real test. If anything fails, copy the exact message and the line it points to.</div></section>
+<section id="h"><h2>8. Problems and fixes</h2><table><tr><th>Message</th><th>Meaning / fix</th></tr>
+<tr><td>Access denied for user 'root'</td><td>Wrong password in <code>app/config_local.py</code>.</td></tr>
+<tr><td>Unknown database 'food_waste_db'</td><td>The SQL file has not been run yet (part 3).</td></tr>
+<tr><td>Can't connect to MySQL server on 'localhost'</td><td>MySQL is not running (start it from Windows Services) or uses another port (see part 4).</td></tr>
+<tr><td>No module named flask / mysql</td><td>Run <code>pip install -r requirements.txt</code> inside the app folder.</td></tr>
+<tr><td>'python' is not recognized</td><td>Reinstall Python and tick <i>Add python.exe to PATH</i>.</td></tr>
+<tr><td>Table or view 'v_...' doesn't exist</td><td>Load the SQL again; the script stopped before the views. Run it as one script.</td></tr>
+<tr><td>Error 1175 (safe update mode)</td><td>Workbench blocks the expiry clean-up. Untick <i>Safe Updates</i> in Edit &gt; Preferences &gt; SQL Editor, reconnect, run the script again.</td></tr>
+<tr><td>You have an error in your SQL syntax near '$$'</td><td>The triggers were run line by line. Run the whole file with the lightning icon.</td></tr>
+<tr><td>Check constraint ... is violated (shown on a page)</td><td>A value broke a rule, for example a 4-digit pincode or a 9-digit phone number.</td></tr>
+<tr><td>Demo shows Rejected where Approved was expected</td><td>The sample times are relative to when the SQL was loaded, so very old data expires. Run the SQL again.</td></tr></table></section>
+</main><script>document.querySelectorAll('.cp').forEach(function(b){b.addEventListener('click',function(){var t=b.nextElementSibling.innerText;if(navigator.clipboard){navigator.clipboard.writeText(t)}b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)})});</script></body></html>
